@@ -30,7 +30,8 @@ func main() {
 
 	options.CreateGroup(flagSet, "input", "Input",
 		flagSet.StringVarP(&cliOptions.Domain, "domain", "d", "", "configured domain to use with interactsh server"),
-		flagSet.StringVar(&cliOptions.IPAddress, "ip", "", "public ip address to use for interactsh server"),
+		flagSet.StringVar(&cliOptions.IPAddress, "ip", "", "public ip address to use for interactsh server (and for ns1)"),
+		flagSet.StringVar(&cliOptions.NS2Address, "ns2", "", "public ip address to use for ns2"),
 		flagSet.StringVarP(&cliOptions.ListenIP, "listen-ip", "lip", "0.0.0.0", "public ip address to listen on"),
 		flagSet.IntVarP(&cliOptions.Eviction, "eviction", "e", 30, "number of days to persist interaction data in memory"),
 		flagSet.BoolVarP(&cliOptions.Auth, "auth", "a", false, "enable authentication to server using random generated token"),

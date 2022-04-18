@@ -21,6 +21,7 @@ type DNSServer struct {
 	ns2Domain  string
 	dotDomain  string
 	ipAddress  net.IP
+	ns2Address net.IP
 	timeToLive uint32
 	server     *dns.Server
 	TxtRecord  string // used for ACME verification
@@ -32,6 +33,7 @@ func NewDNSServer(network string, options *Options) *DNSServer {
 	server := &DNSServer{
 		options:    options,
 		ipAddress:  net.ParseIP(options.IPAddress),
+		ns2Address: net.ParseIP(options.NS2Address),
 		mxDomain:   "mail." + dotdomain,
 		ns1Domain:  "ns1." + dotdomain,
 		ns2Domain:  "ns2." + dotdomain,
@@ -143,12 +145,16 @@ func (h *DNSServer) handleACNAMEANY(zone string, m *dns.Msg) {
 	nsHeader := dns.RR_Header{Name: zone, Rrtype: dns.TypeNS, Class: dns.ClassINET, Ttl: h.timeToLive}
 
 	resultFunction := func(ipAddress net.IP) {
-		m.Answer = append(m.Answer, &dns.A{Hdr: dns.RR_Header{Name: zone, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: h.timeToLive}, A: ipAddress})
+		if strings.Contains(zone, "ns2") {
+			m.Answer = append(m.Answer, &dns.A{Hdr: dns.RR_Header{Name: zone, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: h.timeToLive}, A: h.ns2Address})
+		} else {
+			m.Answer = append(m.Answer, &dns.A{Hdr: dns.RR_Header{Name: zone, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: h.timeToLive}, A: ipAddress})
+		}
 
 		m.Ns = append(m.Ns, &dns.NS{Hdr: nsHeader, Ns: h.ns1Domain})
 		m.Ns = append(m.Ns, &dns.NS{Hdr: nsHeader, Ns: h.ns2Domain})
 		m.Extra = append(m.Extra, &dns.A{Hdr: dns.RR_Header{Name: h.ns1Domain, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: h.timeToLive}, A: h.ipAddress})
-		m.Extra = append(m.Extra, &dns.A{Hdr: dns.RR_Header{Name: h.ns2Domain, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: h.timeToLive}, A: h.ipAddress})
+		m.Extra = append(m.Extra, &dns.A{Hdr: dns.RR_Header{Name: h.ns2Domain, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: h.timeToLive}, A: h.ns2Address})
 	}
 
 	switch {

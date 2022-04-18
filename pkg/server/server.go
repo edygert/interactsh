@@ -35,8 +35,10 @@ type Interaction struct {
 type Options struct {
 	// Domain is the domain for the instance.
 	Domain string
-	// IPAddress is the IP address of the current server.
+	// IPAddress is the IP address of the current server (and ns1).
 	IPAddress string
+	// NS2Address is the IP address of ns2.
+	NS2Address string
 	// ListenIP is the IP address to listen servers on
 	ListenIP string
 	// DomainPort is the port to listen DNS servers on

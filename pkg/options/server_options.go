@@ -7,6 +7,7 @@ type CLIServerOptions struct {
 	Domain                   string
 	DnsPort                  int
 	IPAddress                string
+	NS2Address               string
 	ListenIP                 string
 	HttpPort                 int
 	HttpsPort                int
@@ -40,6 +41,7 @@ func (cliServerOptions *CLIServerOptions) AsServerOptions() *server.Options {
 		Domain:                   cliServerOptions.Domain,
 		DnsPort:                  cliServerOptions.DnsPort,
 		IPAddress:                cliServerOptions.IPAddress,
+		NS2Address:               cliServerOptions.NS2Address,
 		ListenIP:                 cliServerOptions.ListenIP,
 		HttpPort:                 cliServerOptions.HttpPort,
 		HttpsPort:                cliServerOptions.HttpsPort,
