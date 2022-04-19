@@ -145,7 +145,7 @@ func (h *DNSServer) handleACNAMEANY(zone string, m *dns.Msg) {
 	nsHeader := dns.RR_Header{Name: zone, Rrtype: dns.TypeNS, Class: dns.ClassINET, Ttl: h.timeToLive}
 
 	resultFunction := func(ipAddress net.IP) {
-		if strings.Contains(zone, "ns2") {
+		if strings.HasPrefix(zone, "ns2") {
 			m.Answer = append(m.Answer, &dns.A{Hdr: dns.RR_Header{Name: zone, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: h.timeToLive}, A: h.ns2Address})
 		} else {
 			m.Answer = append(m.Answer, &dns.A{Hdr: dns.RR_Header{Name: zone, Rrtype: dns.TypeA, Class: dns.ClassINET, Ttl: h.timeToLive}, A: ipAddress})
